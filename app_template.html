@@ -1,0 +1,406 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI Career Bootcamp</title>
+<style>
+:root{
+  --paper:#f6f7f9; --panel:#ffffff; --ink:#0f1720; --body:#3d4756; --muted:#7a8494;
+  --line:#e3e7ed; --line-soft:#eef1f5;
+  --primary:#2f6fe0; --primary-soft:#e8f0fd;
+  --done:#1f9d5f; --done-soft:#e6f6ee;
+  --gate:#b57614; --gate-soft:#fdf3e0;
+  --shadow:0 1px 2px rgba(15,23,32,.05), 0 4px 14px rgba(15,23,32,.05);
+  --sans:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,sans-serif;
+  --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  --r:14px;
+}
+@media (prefers-color-scheme:dark){
+  :root{--paper:#0b1119;--panel:#151d29;--ink:#eef2f8;--body:#c2ccd9;--muted:#7e8b9c;
+    --line:#243040;--line-soft:#1c2634;--primary:#5b9bff;--primary-soft:#16263f;
+    --done:#35c281;--done-soft:#102a1e;--gate:#e3a944;--gate-soft:#2c2314;--shadow:none;}
+}
+:root[data-theme="dark"]{--paper:#0b1119;--panel:#151d29;--ink:#eef2f8;--body:#c2ccd9;--muted:#7e8b9c;
+  --line:#243040;--line-soft:#1c2634;--primary:#5b9bff;--primary-soft:#16263f;
+  --done:#35c281;--done-soft:#102a1e;--gate:#e3a944;--gate-soft:#2c2314;--shadow:none;}
+:root[data-theme="light"]{--paper:#f6f7f9;--panel:#ffffff;--ink:#0f1720;--body:#3d4756;--muted:#7a8494;
+  --line:#e3e7ed;--line-soft:#eef1f5;--primary:#2f6fe0;--primary-soft:#e8f0fd;
+  --done:#1f9d5f;--done-soft:#e6f6ee;--gate:#b57614;--gate-soft:#fdf3e0;
+  --shadow:0 1px 2px rgba(15,23,32,.05), 0 4px 14px rgba(15,23,32,.05);}
+
+:root{color-scheme:light dark}
+:root[data-theme="dark"]{color-scheme:dark}
+:root[data-theme="light"]{color-scheme:light}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:focus-visible{outline:2px solid var(--primary);outline-offset:2px;border-radius:6px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+body{margin:0;background:var(--paper);color:var(--body);font-family:var(--sans);
+  font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased;padding-bottom:96px}
+.wrap{max-width:680px;margin:0 auto;padding:0 14px}
+h1,h2,h3{margin:0;color:var(--ink);line-height:1.25}
+button{font:inherit;cursor:pointer;border:0;background:none;color:inherit}
+.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+
+/* ---- status bar ---- */
+.status{position:sticky;top:0;z-index:20;background:var(--paper);
+  border-bottom:1px solid var(--line);padding:10px 0 9px}
+.status-in{display:flex;align-items:center;gap:10px}
+.phase-dot{width:10px;height:10px;border-radius:50%;flex:0 0 auto}
+.status-main{flex:1;min-width:0}
+.status-day{font-size:15px;font-weight:650;color:var(--ink);letter-spacing:-.01em}
+.status-sub{font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.streak{font-family:var(--mono);font-size:12px;font-weight:600;color:var(--gate);
+  background:var(--gate-soft);padding:4px 9px;border-radius:999px;white-space:nowrap}
+.theme-btn{font-size:16px;padding:4px 6px;opacity:.55}
+.bar{height:4px;background:var(--line-soft);border-radius:999px;margin-top:9px;overflow:hidden}
+.bar span{display:block;height:100%;background:var(--primary);border-radius:999px;transition:width .4s}
+
+/* ---- day head ---- */
+.dayhead{padding:20px 0 6px}
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--muted);font-weight:600}
+.theme-title{font-size:24px;font-weight:700;letter-spacing:-.02em;margin:5px 0 4px;text-wrap:balance}
+.daymeta{font-size:13px;color:var(--muted)}
+.gatebanner{background:var(--gate-soft);border:1px solid var(--gate);border-radius:var(--r);
+  padding:12px 14px;margin-top:14px}
+.gatebanner b{color:var(--gate);display:block;font-size:13px;letter-spacing:.02em}
+.gatebanner span{font-size:13px;color:var(--body)}
+
+/* ---- blocks + tasks ---- */
+.block{margin-top:22px}
+.block-h{display:flex;align-items:baseline;justify-content:space-between;gap:10px;
+  padding:0 2px 8px}
+.block-h h2{font-size:12px;font-family:var(--mono);letter-spacing:.1em;text-transform:uppercase;
+  color:var(--muted);font-weight:600}
+.block-h .mins{font-family:var(--mono);font-size:12px;color:var(--muted)}
+.task{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);
+  margin-bottom:9px;box-shadow:var(--shadow);overflow:hidden;transition:border-color .2s}
+.task.done{background:var(--done-soft);border-color:transparent}
+.task-row{display:flex;gap:12px;padding:14px;align-items:flex-start}
+.check{width:24px;height:24px;flex:0 0 auto;border:2px solid var(--line);border-radius:8px;
+  margin-top:1px;display:grid;place-items:center;transition:all .18s;background:var(--panel)}
+.check svg{width:14px;height:14px;opacity:0;transform:scale(.6);transition:all .18s}
+.task.done .check{background:var(--done);border-color:var(--done)}
+.task.done .check svg{opacity:1;transform:scale(1)}
+.task-main{flex:1;min-width:0}
+.task-title{font-weight:600;color:var(--ink);font-size:15.5px;line-height:1.35}
+.task.done .task-title{opacity:.55;text-decoration:line-through}
+.task-tags{display:flex;gap:6px;align-items:center;margin-top:6px;flex-wrap:wrap}
+.chip{font-family:var(--mono);font-size:11px;font-weight:600;padding:2px 7px;border-radius:6px;
+  background:var(--line-soft);color:var(--muted);letter-spacing:.02em}
+.chip.cat-implementation{background:var(--primary-soft);color:var(--primary)}
+.chip.cat-math{background:#f0e9fb;color:#7043c9}
+.chip.cat-project{background:#fdeaf0;color:#c2306a}
+.chip.cat-course{background:#e6f5f2;color:#12806c}
+.chip.cat-reading{background:#fdf1e3;color:#a86a1d}
+.chip.cat-job{background:var(--gate-soft);color:var(--gate)}
+.chip.cat-review{background:var(--line-soft);color:var(--muted)}
+.chip.cat-audio{background:#eae9fb;color:#5344c9}
+@media (prefers-color-scheme:dark){ .chip.cat-audio{background:#1c1a3a;color:#9d93f0} }
+@media (prefers-color-scheme:dark){
+  .chip.cat-math{background:#241a3a;color:#b393f0}
+  .chip.cat-project{background:#3a1626;color:#f090b4}
+  .chip.cat-course{background:#0f2b26;color:#4fd0b4}
+  .chip.cat-reading{background:#2e2211;color:#e0a95c}
+}
+.expand{margin-left:auto;padding:2px 4px;color:var(--muted);font-size:13px;opacity:.7}
+.detail{padding:0 14px 14px 50px;font-size:14px;color:var(--body);display:none;line-height:1.55}
+.task.open .detail{display:block}
+.timer-btn{display:inline-flex;align-items:center;gap:6px;margin-top:10px;padding:7px 12px;
+  border:1px solid var(--line);border-radius:9px;font-size:13px;font-weight:600;color:var(--primary);
+  background:var(--panel)}
+
+/* ---- day complete ---- */
+.complete{margin-top:22px;background:var(--done-soft);border:1px solid var(--done);
+  border-radius:var(--r);padding:18px;text-align:center}
+.complete b{display:block;color:var(--done);font-size:17px;margin-bottom:3px}
+.complete span{font-size:13px;color:var(--body)}
+
+/* ---- stats ---- */
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:24px}
+.stat{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px}
+.stat .k{font-size:11px;font-family:var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.stat .v{font-size:21px;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums;margin-top:3px}
+
+/* ---- phases ---- */
+.phases{margin-top:24px}
+.ph{display:flex;align-items:center;gap:10px;padding:9px 0;border-top:1px solid var(--line-soft)}
+.ph-name{flex:1;font-size:14px;color:var(--ink);font-weight:600}
+.ph-bar{width:84px;height:5px;background:var(--line-soft);border-radius:999px;overflow:hidden}
+.ph-bar span{display:block;height:100%;border-radius:999px}
+.ph-pct{font-family:var(--mono);font-size:12px;color:var(--muted);width:34px;text-align:right}
+
+/* ---- nav ---- */
+.nav{position:fixed;left:0;right:0;bottom:0;background:var(--panel);border-top:1px solid var(--line);
+  padding:9px 14px calc(9px + env(safe-area-inset-bottom));z-index:30}
+.nav-in{max-width:680px;margin:0 auto;display:flex;gap:9px;align-items:center}
+.nav button{flex:0 0 auto;padding:11px 15px;border:1px solid var(--line);border-radius:11px;
+  background:var(--paper);font-size:15px;font-weight:600;color:var(--ink)}
+.nav .today{flex:1;background:var(--primary);color:#fff;border-color:transparent}
+.nav button:disabled{opacity:.35}
+
+/* ---- timer overlay ---- */
+.timer{position:fixed;inset:0;background:rgba(10,15,22,.93);z-index:50;display:none;
+  flex-direction:column;align-items:center;justify-content:center;padding:24px;text-align:center}
+.timer.on{display:flex}
+.timer-task{color:#9fb0c4;font-size:14px;max-width:30ch;margin-bottom:6px}
+.timer-time{font-family:var(--mono);font-size:68px;font-weight:700;color:#fff;
+  font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.timer-acts{display:flex;gap:10px;margin-top:22px}
+.timer-acts button{padding:12px 22px;border-radius:11px;font-weight:600;font-size:15px;
+  background:#1d2a3a;color:#fff;border:1px solid #2e3d50}
+.timer-acts .stop{background:#fff;color:#0f1720;border-color:#fff}
+
+.foot{margin:28px 0 10px;font-size:12px;color:var(--muted);text-align:center;line-height:1.7}
+.foot button{text-decoration:underline;color:var(--muted);font-size:12px}
+@media(min-width:700px){ .theme-title{font-size:28px} body{font-size:16.5px} }
+</style>
+
+<div class="status">
+  <div class="wrap status-in">
+    <span class="phase-dot" id="pdot"></span>
+    <div class="status-main">
+      <div class="status-day" id="sday">—</div>
+      <div class="status-sub" id="ssub">—</div>
+    </div>
+    <span class="streak mono" id="streak">0d</span>
+    <button class="theme-btn" id="themeBtn" title="Theme">◐</button>
+  </div>
+  <div class="wrap"><div class="bar"><span id="obar" style="width:0%"></span></div></div>
+</div>
+
+<main class="wrap">
+  <div class="dayhead">
+    <div class="eyebrow" id="eyebrow">—</div>
+    <h1 class="theme-title" id="theme">—</h1>
+    <div class="daymeta" id="daymeta">—</div>
+    <div id="gate"></div>
+  </div>
+
+  <div id="blocks"></div>
+  <div id="complete"></div>
+
+  <div class="stats">
+    <div class="stat"><div class="k">Done</div><div class="v mono" id="stDone">0</div></div>
+    <div class="stat"><div class="k">Hours</div><div class="v mono" id="stHours">0</div></div>
+    <div class="stat"><div class="k">Day</div><div class="v mono" id="stDay">0</div></div>
+  </div>
+
+  <div class="phases" id="phases"></div>
+
+  <div class="foot">
+    Tap a task to see what to do. Check it off when it's finished.<br>
+    Progress saves on this device.
+    <button id="exportBtn">Export</button> ·
+    <button id="importBtn">Import</button> ·
+    <button id="resetBtn">Reset</button>
+  </div>
+</main>
+
+<div class="nav"><div class="nav-in">
+  <button id="prev">‹</button>
+  <button class="today" id="todayBtn">Today</button>
+  <button id="next">›</button>
+</div></div>
+
+<div class="timer" id="timer">
+  <div class="timer-task" id="tTask">—</div>
+  <div class="timer-time mono" id="tTime">00:00</div>
+  <div class="timer-acts">
+    <button id="tPause">Pause</button>
+    <button class="stop" id="tStop">Done</button>
+  </div>
+</div>
+
+<script>
+const DATA = __CURRICULUM__;
+const KEY = 'aibootcamp.v1';
+
+/* Storage can throw in a sandboxed frame or with cookies blocked.
+   Never let that take the whole page down — fall back to memory. */
+const store = (() => {
+  try { localStorage.setItem('__t','1'); localStorage.removeItem('__t');
+        return localStorage; }
+  catch(e){ let m = {}; return {getItem:k=>k in m?m[k]:null, setItem:(k,v)=>{m[k]=v}}; }
+})();
+let state;
+try { state = JSON.parse(store.getItem(KEY)) || {done:{}, idx:null}; }
+catch(e){ state = {done:{}, idx:null}; }
+if (!state.done) state.done = {};
+const save = () => { try { store.setItem(KEY, JSON.stringify(state)); } catch(e){} };
+const days = DATA.days;
+
+function todayIdx(){
+  const t = new Date(); t.setHours(0,0,0,0);
+  const iso = t.getFullYear()+'-'+String(t.getMonth()+1).padStart(2,'0')+'-'+String(t.getDate()).padStart(2,'0');
+  const i = days.findIndex(d => d.date === iso);
+  if (i >= 0) return i;
+  return iso < days[0].date ? 0 : days.length - 1;
+}
+let idx = state.idx !== null && state.idx !== undefined ? state.idx : todayIdx();
+
+const fmtDate = iso => {
+  const [y,m,dd] = iso.split('-').map(Number);
+  return new Date(y, m-1, dd).toLocaleDateString(undefined,
+    {weekday:'long', day:'numeric', month:'long'});
+};
+const isDone = id => !!state.done[id];
+
+function dayDone(d){ return d.tasks.every(t => isDone(t.id)); }
+
+function streak(){
+  let s = 0;
+  for (let i = Math.min(idx, days.length-1); i >= 0; i--){
+    if (days[i].date > days[todayIdx()].date) continue;
+    if (dayDone(days[i])) s++; else break;
+  }
+  return s;
+}
+
+function render(){
+  const d = days[idx];
+  const ph = DATA.phases.find(p => p.n === d.phase);
+
+  document.getElementById('pdot').style.background = d.phaseColor;
+  document.getElementById('sday').textContent = `Day ${idx+1} · Week ${d.week}`;
+  document.getElementById('ssub').textContent = `Phase ${d.phase} — ${d.phaseName}`;
+  document.getElementById('streak').textContent = streak() + 'd';
+
+  const allTasks = days.flatMap(x => x.tasks);
+  const doneAll = allTasks.filter(t => isDone(t.id)).length;
+  document.getElementById('obar').style.width = (100*doneAll/allTasks.length) + '%';
+
+  document.getElementById('eyebrow').textContent = fmtDate(d.date);
+  document.getElementById('theme').textContent = d.theme;
+  const mins = d.tasks.filter(t=>t.cat!=='audio').reduce((a,t)=>a+t.mins,0);
+  const audio = d.tasks.filter(t=>t.cat==='audio').reduce((a,t)=>a+t.mins,0);
+  document.getElementById('daymeta').textContent =
+    `${(mins/60).toFixed(1)} h focused` + (audio ? ` · ${(audio/60).toFixed(1)} h audio while driving` : '');
+
+  document.getElementById('gate').innerHTML = d.isGate
+    ? `<div class="gatebanner"><b>ASSESSMENT DAY</b><span>No references, no help. This measures what actually stuck — a bad result is information, not failure.</span></div>` : '';
+
+  const blocks = {};
+  d.tasks.forEach(t => { (blocks[t.block] = blocks[t.block] || []).push(t); });
+  document.getElementById('blocks').innerHTML = Object.entries(blocks).map(([name, ts]) => `
+    <section class="block">
+      <div class="block-h"><h2>${name}</h2><span class="mins">${
+        (ts.reduce((a,t)=>a+t.mins,0)/60).toFixed(1)} h</span></div>
+      ${ts.map(t => `
+        <div class="task ${isDone(t.id)?'done':''}" data-id="${t.id}">
+          <div class="task-row">
+            <button class="check" data-check="${t.id}" aria-label="Toggle done">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.5"
+                stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+            </button>
+            <div class="task-main">
+              <div class="task-title">${t.title}</div>
+              <div class="task-tags">
+                <span class="chip cat-${t.cat}">${t.cat}</span>
+                <span class="chip">${t.mins} min</span>
+              </div>
+            </div>
+            <span class="expand">▾</span>
+          </div>
+          <div class="detail">${t.detail}
+            ${t.cat === 'audio' ? '' : `<div><button class="timer-btn" data-timer="${
+              Math.min(t.mins, 25)}" data-title="${t.title.replace(/"/g,'&quot;')}">▶ Start ${
+              Math.min(t.mins, 25)}-min focus block</button></div>`}
+          </div>
+        </div>`).join('')}
+    </section>`).join('');
+
+  document.getElementById('complete').innerHTML = dayDone(d)
+    ? `<div class="complete"><b>Day complete</b><span>${(mins/60).toFixed(1)} hours logged. Rest — tomorrow is Day ${idx+2}.</span></div>` : '';
+
+  document.getElementById('stDone').textContent = doneAll;
+  document.getElementById('stHours').textContent = Math.round(
+    allTasks.filter(t=>isDone(t.id)).reduce((a,t)=>a+t.mins,0)/60);
+  document.getElementById('stDay').textContent = `${idx+1}/${days.length}`;
+
+  document.getElementById('phases').innerHTML = DATA.phases.map(p => {
+    const ts = days.filter(x=>x.phase===p.n).flatMap(x=>x.tasks);
+    const dn = ts.filter(t=>isDone(t.id)).length;
+    const pct = Math.round(100*dn/ts.length);
+    return `<div class="ph">
+      <span class="phase-dot" style="background:${p.color}"></span>
+      <span class="ph-name">${p.name}</span>
+      <span class="ph-bar"><span style="width:${pct}%;background:${p.color}"></span></span>
+      <span class="ph-pct mono">${pct}%</span></div>`;
+  }).join('');
+
+  document.getElementById('prev').disabled = idx === 0;
+  document.getElementById('next').disabled = idx === days.length - 1;
+  state.idx = idx; save();
+}
+
+document.addEventListener('click', e => {
+  const c = e.target.closest('[data-check]');
+  if (c){ const id = c.dataset.check;
+    if (state.done[id]) delete state.done[id]; else state.done[id] = Date.now();
+    save(); render(); return; }
+  const tb = e.target.closest('[data-timer]');
+  if (tb){ startTimer(+tb.dataset.timer, tb.dataset.title); return; }
+  const t = e.target.closest('.task');
+  if (t && !e.target.closest('.timer-btn')) t.classList.toggle('open');
+});
+
+document.getElementById('prev').onclick = () => { if(idx>0){idx--;render();window.scrollTo(0,0);} };
+document.getElementById('next').onclick = () => { if(idx<days.length-1){idx++;render();window.scrollTo(0,0);} };
+document.getElementById('todayBtn').onclick = () => { idx = todayIdx(); render(); window.scrollTo(0,0); };
+
+/* theme */
+const themeBtn = document.getElementById('themeBtn');
+themeBtn.onclick = () => {
+  const cur = document.documentElement.getAttribute('data-theme');
+  const next = cur === 'dark' ? 'light' : cur === 'light' ? '' : 'dark';
+  if (next) document.documentElement.setAttribute('data-theme', next);
+  else document.documentElement.removeAttribute('data-theme');
+  state.theme = next; save();
+};
+if (state.theme) document.documentElement.setAttribute('data-theme', state.theme);
+
+/* timer */
+let tInt = null, tLeft = 0, tPaused = false;
+function startTimer(mins, title){
+  tLeft = mins*60; tPaused = false;
+  document.getElementById('tTask').textContent = title;
+  document.getElementById('timer').classList.add('on');
+  document.getElementById('tPause').textContent = 'Pause';
+  tick(); clearInterval(tInt);
+  tInt = setInterval(() => { if(!tPaused){ tLeft--; tick();
+    if (tLeft <= 0){ clearInterval(tInt); document.getElementById('tTime').textContent = 'DONE'; } } }, 1000);
+}
+function tick(){
+  const m = Math.floor(Math.max(tLeft,0)/60), s = Math.max(tLeft,0)%60;
+  document.getElementById('tTime').textContent =
+    String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
+}
+document.getElementById('tPause').onclick = () => {
+  tPaused = !tPaused;
+  document.getElementById('tPause').textContent = tPaused ? 'Resume' : 'Pause';
+};
+document.getElementById('tStop').onclick = () => {
+  clearInterval(tInt); document.getElementById('timer').classList.remove('on');
+};
+
+/* export / import / reset */
+document.getElementById('exportBtn').onclick = () => {
+  const blob = new Blob([JSON.stringify(state)], {type:'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob); a.download = 'bootcamp-progress.json'; a.click();
+};
+document.getElementById('importBtn').onclick = () => {
+  const i = document.createElement('input'); i.type = 'file'; i.accept = '.json';
+  i.onchange = () => { const f = i.files[0]; if(!f) return;
+    const r = new FileReader();
+    r.onload = () => { try { state = JSON.parse(r.result); save(); idx = todayIdx(); render(); }
+      catch(err){ alert('Could not read that file.'); } };
+    r.readAsText(f); };
+  i.click();
+};
+document.getElementById('resetBtn').onclick = () => {
+  if (confirm('Clear all progress? This cannot be undone.')){
+    state = {done:{}, idx:null}; save(); idx = todayIdx(); render(); }
+};
+
+render();
+</script>
