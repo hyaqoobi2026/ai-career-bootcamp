@@ -149,6 +149,60 @@ button{font:inherit;cursor:pointer;border:0;background:none;color:inherit}
   background:#1d2a3a;color:#fff;border:1px solid #2e3d50}
 .timer-acts .stop{background:#fff;color:#0f1720;border-color:#fff}
 
+/* ---- exercise ---- */
+.exbtn{display:inline-flex;align-items:center;gap:6px;margin-top:10px;padding:8px 13px;
+  border-radius:9px;font-size:13px;font-weight:650;background:var(--primary);color:#fff}
+.exbtn.passed{background:var(--done)}
+.lockmsg{font-size:12px;color:var(--muted);margin-top:8px;line-height:1.5}
+.ex{position:fixed;inset:0;background:var(--paper);z-index:60;display:none;
+  flex-direction:column;overflow:hidden}
+.ex.on{display:flex}
+.ex-top{display:flex;align-items:center;gap:10px;padding:12px 14px;
+  border-bottom:1px solid var(--line);background:var(--panel);flex:0 0 auto}
+.ex-top h3{flex:1;font-size:15px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ex-top button{padding:7px 12px;border:1px solid var(--line);border-radius:8px;
+  font-size:13px;font-weight:600;background:var(--paper);color:var(--ink)}
+.ex-tabs{display:flex;gap:4px;padding:8px 14px 0;background:var(--panel);flex:0 0 auto}
+.ex-tabs button{padding:7px 13px;border-radius:8px 8px 0 0;font-size:13px;font-weight:600;
+  color:var(--muted)}
+.ex-tabs button.sel{background:var(--paper);color:var(--ink)}
+.ex-body{flex:1;overflow-y:auto;padding:16px 14px 20px;-webkit-overflow-scrolling:touch}
+.pane{display:none;max-width:760px;margin:0 auto}
+.pane.sel{display:block}
+.brief h2{font-size:17px;margin:20px 0 8px}
+.brief p{margin:10px 0}
+.brief code{font-family:var(--mono);font-size:.88em;background:var(--line-soft);
+  padding:1px 5px;border-radius:4px}
+.brief pre{background:var(--panel);border:1px solid var(--line);border-radius:10px;
+  padding:12px;overflow-x:auto;font-family:var(--mono);font-size:12.5px;line-height:1.55}
+.brief pre code{background:none;padding:0}
+.brief strong{color:var(--ink)}
+#code{width:100%;min-height:340px;font-family:var(--mono);font-size:13px;line-height:1.5;
+  padding:12px;border:1px solid var(--line);border-radius:10px;background:var(--panel);
+  color:var(--ink);resize:vertical;tab-size:4;white-space:pre;overflow-wrap:normal;
+  overflow-x:auto}
+.runbar{display:flex;gap:8px;align-items:center;margin-top:10px;flex-wrap:wrap}
+.runbar button{padding:10px 16px;border-radius:9px;font-size:14px;font-weight:650;
+  background:var(--primary);color:#fff}
+.runbar button.ghost{background:var(--paper);color:var(--ink);border:1px solid var(--line)}
+.runbar button:disabled{opacity:.5}
+.status{font-size:12.5px;color:var(--muted)}
+#results{margin-top:14px}
+.res{display:flex;gap:9px;padding:9px 11px;border-radius:8px;margin-bottom:6px;
+  font-size:13px;line-height:1.45;align-items:flex-start}
+.res.pass{background:var(--done-soft);color:var(--done)}
+.res.fail{background:#fdecec;color:#c0392b}
+@media (prefers-color-scheme:dark){.res.fail{background:#3a1a1a;color:#ff8a80}}
+.res .ic{font-weight:700;flex:0 0 auto}
+.res .msg{color:var(--body)}
+.res.pass .msg{color:var(--done)}
+.allpass{background:var(--done);color:#fff;padding:14px;border-radius:10px;
+  font-weight:650;text-align:center;margin-top:12px}
+.hint{background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--gate);
+  border-radius:8px;padding:11px 13px;margin-bottom:8px;font-size:13.5px;line-height:1.55}
+.hint b{color:var(--gate);display:block;font-size:11px;letter-spacing:.08em;margin-bottom:3px}
+.solwarn{background:var(--gate-soft);border:1px solid var(--gate);border-radius:10px;
+  padding:14px;margin-bottom:12px;font-size:13.5px;line-height:1.55}
 .foot{margin:28px 0 10px;font-size:12px;color:var(--muted);text-align:center;line-height:1.7}
 .foot button{text-decoration:underline;color:var(--muted);font-size:12px}
 @media(min-width:700px){ .theme-title{font-size:28px} body{font-size:16.5px} }
@@ -201,6 +255,35 @@ button{font:inherit;cursor:pointer;border:0;background:none;color:inherit}
   <button id="next">›</button>
 </div></div>
 
+<div class="ex" id="ex">
+  <div class="ex-top">
+    <h3 id="exTitle">—</h3>
+    <button id="exClose">Close</button>
+  </div>
+  <div class="ex-tabs">
+    <button data-pane="brief" class="sel">Problem</button>
+    <button data-pane="code">Code</button>
+    <button data-pane="hints">Hints</button>
+    <button data-pane="sol">Solution</button>
+  </div>
+  <div class="ex-body">
+    <div class="pane brief sel" id="paneBrief"></div>
+
+    <div class="pane" id="paneCode">
+      <textarea id="code" spellcheck="false" autocapitalize="off" autocorrect="off"></textarea>
+      <div class="runbar">
+        <button id="runBtn">Run tests</button>
+        <button id="resetBtn2" class="ghost">Reset code</button>
+        <span class="status" id="pyStatus"></span>
+      </div>
+      <div id="results"></div>
+    </div>
+
+    <div class="pane" id="paneHints"></div>
+    <div class="pane" id="paneSol"></div>
+  </div>
+</div>
+
 <div class="timer" id="timer">
   <div class="timer-task" id="tTask">—</div>
   <div class="timer-time mono" id="tTime">00:00</div>
@@ -212,6 +295,7 @@ button{font:inherit;cursor:pointer;border:0;background:none;color:inherit}
 
 <script>
 const DATA = __CURRICULUM__;
+const EX = __EXERCISES__;
 const KEY = 'aibootcamp.v1';
 
 /* Storage can throw in a sandboxed frame or with cookies blocked.
@@ -225,6 +309,9 @@ let state;
 try { state = JSON.parse(store.getItem(KEY)) || {done:{}, idx:null}; }
 catch(e){ state = {done:{}, idx:null}; }
 if (!state.done) state.done = {};
+if (!state.passed) state.passed = {};   // taskId -> true once tests go green
+if (!state.code) state.code = {};       // taskId -> your saved source
+if (!state.unverified) state.unverified = {};
 const save = () => { try { store.setItem(KEY, JSON.stringify(state)); } catch(e){} };
 const days = DATA.days;
 
@@ -301,6 +388,12 @@ function render(){
             <span class="expand">▾</span>
           </div>
           <div class="detail">${t.detail}
+            ${EX[t.id] ? `<div><button class="exbtn ${state.passed[t.id]?'passed':''}"
+                data-ex="${t.id}">${state.passed[t.id]
+                ? '✓ Tests passing — reopen' : '⌨ Open the exercise'}</button></div>
+              ${state.passed[t.id] ? '' :
+                '<div class="lockmsg">This task has a coding exercise with tests. '
+                + 'The box ticks itself when they pass.</div>'}` : ''}
             ${t.cat === 'audio' ? '' : `<div><button class="timer-btn" data-timer="${
               Math.min(t.mins, 25)}" data-title="${t.title.replace(/"/g,'&quot;')}">▶ Start ${
               Math.min(t.mins, 25)}-min focus block</button></div>`}
@@ -335,8 +428,20 @@ function render(){
 document.addEventListener('click', e => {
   const c = e.target.closest('[data-check]');
   if (c){ const id = c.dataset.check;
-    if (state.done[id]) delete state.done[id]; else state.done[id] = Date.now();
+    if (state.done[id]) { delete state.done[id]; delete state.unverified[id]; }
+    else {
+      // A task with an exercise is not "done" on your say-so. Tests decide.
+      if (EX[id] && !state.passed[id]) {
+        if (!confirm('This task has tests and they have not passed yet.\n\n'
+            + 'Open the exercise instead?\n\nCancel = mark it done anyway '
+            + '(it will be flagged as unverified).')) {
+          state.done[id] = Date.now(); state.unverified[id] = true;
+        } else { openEx(id); return; }
+      } else state.done[id] = Date.now();
+    }
     save(); render(); return; }
+  const xb = e.target.closest('[data-ex]');
+  if (xb){ openEx(xb.dataset.ex); return; }
   const tb = e.target.closest('[data-timer]');
   if (tb){ startTimer(+tb.dataset.timer, tb.dataset.title); return; }
   const t = e.target.closest('.task');
@@ -380,6 +485,165 @@ document.getElementById('tPause').onclick = () => {
 };
 document.getElementById('tStop').onclick = () => {
   clearInterval(tInt); document.getElementById('timer').classList.remove('on');
+};
+
+/* ---------------------------------------------------------------- exercises */
+let curEx = null, pyodide = null, pyLoading = null;
+
+function md(src){
+  const blocks = [];
+  // pull fenced code out first so paragraph joining cannot touch it
+  let s = src.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+             .replace(/```\n?([\s\S]*?)```/g, (m,c) => {
+               blocks.push(`<pre><code>${c.replace(/\n+$/,'')}</code></pre>`);
+               return ` ${blocks.length-1} `;
+             });
+  const html = s.split(/\n{2,}/).map(para => {
+    const t = para.trim();
+    if (!t) return '';
+    if (/^ \d+ $/.test(t)) return t;              // a code block
+    if (t.startsWith('## ')) return `<h2>${inline(t.slice(3))}</h2>`;
+    // join wrapped lines into one paragraph, keep list items on their own line
+    if (/^[-*\d]/.test(t) && t.includes('\n'))
+      return `<p>${t.split('\n').map(l=>inline(l.trim())).join('<br>')}</p>`;
+    return `<p>${inline(t.replace(/\n/g,' '))}</p>`;
+  }).join('');
+  return html.replace(/ (\d+) /g, (m,i) => blocks[+i]);
+}
+function inline(t){
+  return t.replace(/`([^`]+)`/g,'<code>$1</code>')
+          .replace(/\*\*([^*]+)\*\*/g,'<strong>$1</strong>')
+          .replace(/(?<!\*)\*([^*\n]+)\*(?!\*)/g,'<em>$1</em>');
+}
+
+function openEx(id){
+  const e = EX[id]; if (!e) return;
+  curEx = id;
+  document.getElementById('exTitle').textContent = e.title;
+  document.getElementById('paneBrief').innerHTML = `<div class="brief">${md(e.brief)}</div>`;
+  document.getElementById('code').value = state.code[id] || e.starter;
+  document.getElementById('results').innerHTML = '';
+  document.getElementById('paneHints').innerHTML = e.hints.map((h,i)=>
+    `<div class="hint"><b>HINT ${i+1}</b>${md(h).replace(/<\/?p>/g,'')}</div>`).join('');
+  document.getElementById('paneSol').innerHTML =
+    `<div class="solwarn"><strong>Try it properly first.</strong> Reading the solution
+     before you have struggled is the fastest way to feel like you learned something
+     and retain nothing. Use the hints. Come back tomorrow if you must.</div>
+     <div class="brief"><pre><code>${e.solution
+       .replace(/&/g,'&amp;').replace(/</g,'&lt;')}</code></pre></div>`;
+  showPane('brief');
+  document.getElementById('ex').classList.add('on');
+}
+function showPane(name){
+  document.querySelectorAll('.ex-tabs button').forEach(b =>
+    b.classList.toggle('sel', b.dataset.pane === name));
+  const map = {brief:'paneBrief', code:'paneCode', hints:'paneHints', sol:'paneSol'};
+  Object.entries(map).forEach(([k,v]) =>
+    document.getElementById(v).classList.toggle('sel', k === name));
+  document.querySelector('.ex-body').scrollTop = 0;
+}
+document.querySelectorAll('.ex-tabs button').forEach(b =>
+  b.onclick = () => showPane(b.dataset.pane));
+document.getElementById('exClose').onclick = () => {
+  if (curEx) { state.code[curEx] = document.getElementById('code').value; save(); }
+  document.getElementById('ex').classList.remove('on'); curEx = null; render();
+};
+document.getElementById('resetBtn2').onclick = () => {
+  if (curEx && confirm('Replace your code with the starter template?'))
+    document.getElementById('code').value = EX[curEx].starter;
+};
+document.getElementById('code').addEventListener('keydown', ev => {
+  if (ev.key === 'Tab'){ ev.preventDefault();
+    const t = ev.target, s = t.selectionStart;
+    t.value = t.value.slice(0,s) + '    ' + t.value.slice(t.selectionEnd);
+    t.selectionStart = t.selectionEnd = s + 4; }
+});
+
+async function getPy(){
+  if (pyodide) return pyodide;
+  if (pyLoading) return pyLoading;
+  const st = document.getElementById('pyStatus');
+  pyLoading = (async () => {
+    st.textContent = 'Loading Python (first run only, ~15s)…';
+    if (!window.loadPyodide){
+      await new Promise((res, rej) => {
+        const s = document.createElement('script');
+        s.src = 'https://cdn.jsdelivr.net/pyodide/v0.26.2/full/pyodide.js';
+        s.onload = res; s.onerror = () => rej(new Error('could not load Python'));
+        document.head.appendChild(s);
+      });
+    }
+    const py = await loadPyodide({indexURL:'https://cdn.jsdelivr.net/pyodide/v0.26.2/full/'});
+    st.textContent = 'Loading numpy…';
+    await py.loadPackage('numpy');
+    st.textContent = '';
+    pyodide = py; return py;
+  })();
+  return pyLoading;
+}
+
+document.getElementById('runBtn').onclick = async () => {
+  if (!curEx) return;
+  const btn = document.getElementById('runBtn');
+  const out = document.getElementById('results');
+  const st  = document.getElementById('pyStatus');
+  const src = document.getElementById('code').value;
+  state.code[curEx] = src; save();
+  btn.disabled = true; out.innerHTML = '';
+  let py;
+  try { py = await getPy(); }
+  catch(err){
+    btn.disabled = false; st.textContent = '';
+    out.innerHTML = `<div class="res fail"><span class="ic">!</span><span class="msg">
+      Could not load Python — you need to be online the first time. Run your code in
+      VS Code instead; the tests are in the Problem tab.</span></div>`;
+    return;
+  }
+  st.textContent = 'Running…';
+  py.globals.set('_student_src', src);
+  py.globals.set('_test_src', EX[curEx].tests);
+  let report;
+  try {
+    report = py.runPython(`
+import json, traceback
+_res = []
+def check(cond, msg=""):
+    _res.append({"ok": bool(cond), "msg": msg})
+_ns = {"check": check}
+_err = None
+try:
+    exec(_student_src, _ns)
+except Exception:
+    _err = "Your code raised before tests ran:\\n" + traceback.format_exc()
+if _err is None:
+    try:
+        exec(_test_src, _ns)
+    except Exception:
+        _err = "A test raised:\\n" + traceback.format_exc()
+json.dumps({"results": _res, "error": _err})
+`);
+  } catch(err){ report = JSON.stringify({results:[], error:String(err)}); }
+  st.textContent = '';
+  btn.disabled = false;
+
+  const {results, error} = JSON.parse(report);
+  let html = results.map((r,i) => `<div class="res ${r.ok?'pass':'fail'}">
+      <span class="ic">${r.ok?'✓':'✕'}</span>
+      <span class="msg">${r.ok ? 'Check '+(i+1)+' passed'
+        : (r.msg || 'Check '+(i+1)+' failed').replace(/</g,'&lt;')}</span></div>`).join('');
+  if (error) html += `<div class="res fail"><span class="ic">!</span>
+      <span class="msg"><pre style="white-space:pre-wrap;margin:0">${
+      error.replace(/</g,'&lt;')}</pre></span></div>`;
+
+  const passed = !error && results.length > 0 && results.every(r => r.ok);
+  if (passed){
+    html += `<div class="allpass">All ${results.length} checks passed — task complete</div>`;
+    state.passed[curEx] = true;
+    state.done[curEx] = Date.now();
+    delete state.unverified[curEx];
+    save();
+  }
+  out.innerHTML = html;
 };
 
 /* export / import / reset */
