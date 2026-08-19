@@ -723,6 +723,11 @@ def normal_equation(X, y):
 )
 
 
+import exercises_w2, exercises_w3, exercises_w4
+for _mod in (exercises_w2, exercises_w3, exercises_w4):
+    _mod.add(ex)
+
+
 if __name__ == "__main__":
     out = pathlib.Path(__file__).parent / "exercises.json"
     out.write_text(json.dumps(EXERCISES, indent=1))
